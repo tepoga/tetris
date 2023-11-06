@@ -70,6 +70,7 @@ document.onkeydown = (e) => {
             break;
 
     }
+    draw();
 }
 //初期化処理
 const init = () => {
