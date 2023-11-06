@@ -14,12 +14,12 @@ const canvasH = blockSize * boardRow;
 canvas.width = canvasW;
 canvas.height = canvasH;
 
-//
+//コンテナ
 const container = document.getElementById("container")
 container.style.width = canvasW + 'px';
 
-const draw=()=> {
-    SecondContext.fillstyle = '#000';
+const draw = () => {
+    SecondContext.fillStyle = '#000';
     SecondContext.fillRect(0, 0, canvasW, canvasH);
 }
 //初期化処理
