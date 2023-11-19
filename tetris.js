@@ -4,18 +4,19 @@ const blockSize = 30;
 const boardRow = 20;
 const boardCol = 10;
 
-
-const canvas = document.getElementById("canvas")
+//キャンバスの取得
+const canvas = document.getElementById('canvas')
 // 2ndコンテキストを取得
-const SecondContext = canvas.getContext("2d")
+const SecondConText = canvas.getContext('2d')
+
 //キャンバスサイズ
 const canvasW = blockSize * boardCol;
 const canvasH = blockSize * boardRow;
 canvas.width = canvasW;
 canvas.height = canvasH;
 
-//コンテナ
-const container = document.getElementById("container")
+//コンテナの設定
+const container = document.getElementById('container')
 container.style.width = canvasW + 'px';
 
 // テトリミノ1片の大きさ
@@ -36,17 +37,12 @@ let offsetY = 0;
 const board = [];
 
 const draw = () => {
-    SecondContext.fillStyle = '#000';
-    SecondContext.fillRect(0, 0, canvasW, canvasH);
-
-    // //塗りに赤を設定
-    // SecondContext.fillStyle = "#f00";
-    // //x座標150,y座標150の場所に幅30,縦30の四角を描画
-    // SecondContext.fillRect(150, 150, blockSize, blockSize);
+    SecondConText.fillStyle = '#000';
+    SecondConText.fillRect(0, 0, canvasW, canvasH);
 
     //ボードに存在しているブロックを塗る
     for (let y = 0; y < boardRow; y++){
-        for(let x = 0; x < boardCol; y++){
+        for(let x = 0; x < boardCol; x++){
             if(board[y][x]){
                 drawBlock(x, y);
             }
@@ -65,17 +61,17 @@ const draw = () => {
 
  //ブロックを一つ描画する
  const drawBlock = (x, y) => {
-    let px = x * blockSize
-    let py = y * blockSize
+    let px = x * blockSize;
+    let py = y * blockSize;
 
     //塗り色
-    SecondContext.fillStyle = '#000';
-    SecondContext.fillRect (px, py, blockSize, blockSize);
+    SecondConText.fillStyle = '#f00';
+    SecondConText.fillRect (px, py, blockSize, blockSize);
     //線を設定
-    SecondContext.strokestyle = 'block';
+    SecondConText.strokestyle = 'black';
     //線を描写
-    SecondContext.strokeRect(px, py, blockSize, blockSize);
- }
+    SecondConText.strokeRect(px, py, blockSize, blockSize);
+ };
 
 document.onkeydown = (e) => {
     switch (e.keyCode) {
@@ -94,9 +90,21 @@ document.onkeydown = (e) => {
 
     }
     draw();
-}
+};
+//
 //初期化処理
 const init = () => {
+    //ボード(20*10を0で埋める)
+    for (let y = 0; y < boardRow; y++){
+        board[y] =[];
+        for(let x = 0; x < boardCol; x++) {
+            board[y][x] = 0;
+        }
+    }
+
+    //テスト用
+    board[3][5]=1;
+
     draw();
 
 }
