@@ -32,28 +32,51 @@ let tet = [
 let offsetX = 0;
 let offsetY = 0;
 
+//ボード本体
+const board = [];
+
 const draw = () => {
     SecondContext.fillStyle = '#000';
     SecondContext.fillRect(0, 0, canvasW, canvasH);
 
-    //塗りに赤を設定
-    SecondContext.fillStyle = "#f00";
-    //x座標150,y座標150の場所に幅30,縦30の四角を描画
-    SecondContext.fillRect(150, 150, blockSize, blockSize);
+    // //塗りに赤を設定
+    // SecondContext.fillStyle = "#f00";
+    // //x座標150,y座標150の場所に幅30,縦30の四角を描画
+    // SecondContext.fillRect(150, 150, blockSize, blockSize);
+
+    //ボードに存在しているブロックを塗る
+    for (let y = 0; y < boardRow; y++){
+        for(let x = 0; x < boardCol; y++){
+            if(board[y][x]){
+                drawBlock(x, y);
+            }
+        }
+    }
 
     //テトリミノの描画
     for (let y = 0; y < tetSize; y++) {
         for (let x = 0; x < tetSize; x++) {
             if (tet[y][x]) {
-                SecondContext.fillRect(
-                    (offsetX + x) * blockSize,
-                    (offsetY + y) * blockSize,
-                    blockSize,
-                    blockSize);
+                drawBlock(offsetX + x, offsetY + y)
             }
         }
     }
-}
+};
+
+ //ブロックを一つ描画する
+ const drawBlock = (x, y) => {
+    let px = x * blockSize
+    let py = y * blockSize
+
+    //塗り色
+    SecondContext.fillStyle = '#000';
+    SecondContext.fillRect (px, py, blockSize, blockSize);
+    //線を設定
+    SecondContext.strokestyle = 'block';
+    //線を描写
+    SecondContext.strokeRect(px, py, blockSize, blockSize);
+ }
+
 document.onkeydown = (e) => {
     switch (e.keyCode) {
         case 37: //左
