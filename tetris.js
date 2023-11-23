@@ -100,6 +100,20 @@ const canMove = (dx,dy) => {
     return true;
 };
 
+//回転
+const createRotateTet = () => {
+    //新しいtetを作る
+    let newTet =[];
+    for (let y = 0; y < tetSize; y++) {
+        newTet[y] = [];
+        for (let x = 0; x < tetSize; x++) {
+            //時計回りに90度回転させる
+            newTet[y][x] = tet[tetSize -1 -x][y];
+        }
+    }
+    return newTet;
+}
+
 document.onkeydown = (e) => {
     switch (e.keyCode) {
         case 37: //左
@@ -114,7 +128,8 @@ document.onkeydown = (e) => {
         case 40: //下
             if (canMove(0,1)) offsetY++;
             break;
-
+        case 32: //Space
+            tet =createRotateTet();
     }
     draw();
 };
