@@ -130,9 +130,9 @@ document.onkeydown = (e) => {
             if (canMove(0,1)) offsetY++;
             break;
         case 32: //Space
-            tet =createRotateTet();
-            if(canMove (0, 0,nowTet)) {
-                tet = nowTet;
+            let newTet = createRotateTet();
+            if(canMove (0, 0,newTet)) {
+                tet = newTet;
             }
     }
     draw();
