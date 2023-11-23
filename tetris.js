@@ -74,11 +74,12 @@ const draw = () => {
  };
 
 //指定された方向に移動できるかの判定（x移動量, y移動量)
-const canMove = (dx,dy) => {
+const canMove = (dx, dy, nowTet = tet) => {
     for (let y = 0; y < tetSize; y++) {
         for (let x = 0; x < tetSize ; x++){
             //その場所にブロッックがあれば
-            if (tet[y][x]) {
+            if (nowTet[y][x]) {
+                //ボード座標に変換
                 let nx = offsetX + x + dx;
                 let ny = offsetY + y + dy;
                 if(
@@ -130,6 +131,9 @@ document.onkeydown = (e) => {
             break;
         case 32: //Space
             tet =createRotateTet();
+            if(canMove (0, 0,nowTet)) {
+                tet = nowTet;
+            }
     }
     draw();
 };
