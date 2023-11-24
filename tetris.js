@@ -137,7 +137,10 @@ document.onkeydown = (e) => {
     }
     draw();
 };
-//
+const iniStarPos =() => {
+    offsetX = boardCol / 2 - tetSize / 2;
+    offsetY = 0;
+}
 //初期化処理
 const init = () => {
     //ボード(20*10を0で埋める)
@@ -149,7 +152,8 @@ const init = () => {
     }
 
     //テスト用
-    board[3][5]=1;
+    //board[3][5]=1;
+    iniStarPos();
 
     draw();
 
