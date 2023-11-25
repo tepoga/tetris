@@ -1,6 +1,8 @@
-
-//ボードのサイズ
+//落下サイクル
+const speed = 300;
+//ブロック1マスの大きさ
 const blockSize = 30;
+//ボードサイズ
 const boardRow = 20;
 const boardCol = 10;
 
@@ -35,6 +37,9 @@ let offsetY = 0;
 
 //ボード本体
 const board = [];
+
+//タイマーID
+let timeId = NaN;
 
 const draw = () => {
     SecondConText.fillStyle = '#000';
@@ -137,6 +142,17 @@ document.onkeydown = (e) => {
     }
     draw();
 };
+
+//繰り返し行われる落下処理
+const droptest = () => {
+    //下に行けたら
+    if (canMove (0, 1)) {
+        offsetY++;
+    } else {
+    }
+    draw();
+};
+
 const iniStarPos =() => {
     offsetX = boardCol / 2 - tetSize / 2;
     offsetY = 0;
@@ -154,7 +170,8 @@ const init = () => {
     //テスト用
     //board[3][5]=1;
     iniStarPos();
-
+    //繰り返し処理
+    timeId = setInterval (droptest, speed);
     draw();
 
 }
