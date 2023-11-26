@@ -98,7 +98,7 @@ const board = [];
 let timeId = NaN;
 
 //ゲームオーバーフラグ
-let isGameOber = false;
+let isGameOver = false;
 
 const draw = () => {
     SecondConText.fillStyle = '#000';
@@ -121,8 +121,17 @@ const draw = () => {
             }
         }
     }
-};
 
+    if (isGameOver) {
+        const s = 'GAME OVER'
+        SecondConText.font = "40px 'MS ゴジック'";
+        const w = SecondConText.measureText(s).width;
+        const x = canvasW / 2 - w / 2;
+        const y = canvasH / 2 - 20;
+        SecondConText.fillStyle = 'white';
+        SecondConText.fillText(s, x, y);
+    }
+};
 //ブロックを一つ描画する
 const drawBlock = (x, y, tet_idx) => {
     let px = x * blockSize;
@@ -180,6 +189,7 @@ const createRotateTet = () => {
 }
 
 document.onkeydown = (e) => {
+    if (isGameOver) return;
     switch (e.keyCode) {
         case 37: //左
             if (canMove(-1, 0)) offsetX--;
@@ -241,6 +251,7 @@ const clearLine = () => {
 
 //繰り返し行われる落下処理
 const droptet = () => {
+    if (isGameOver) return;
     //下に行けたら
     if (canMove(0, 1)) {
         offsetY++;
@@ -254,6 +265,11 @@ const droptet = () => {
         tet = tetTypes[tet_idx];
         //初期位置に戻す
         initStarPos();
+        //次のtetを出せなかったらGameOver
+        if (!canMove(0, 0)) {
+            isGameOver = true;
+            clearInterval(timerId);
+        }
     }
     draw();
 };
