@@ -23,13 +23,57 @@ container.style.width = canvasW + 'px';
 
 // テトリミノ1片の大きさ
 const tetSize = 4;
-//T字型のテトリミノ
-let tet = [
-    [0, 0, 0, 0],
-    [0, 1, 0, 0],
-    [1, 1, 1, 0],
-    [0, 0, 0, 0],
-]
+//テトリミノの種類
+const tetTypes = [
+    [], //最初の要素を空としておく
+    [
+      [0, 0, 0, 0],
+      [0, 1, 1, 0],
+      [0, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    [
+      [0, 0, 0, 0],
+      [0, 1, 0, 0],
+      [1, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    [
+      [0, 0, 0, 0],
+      [1, 1, 0, 0],
+      [0, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    [
+      [0, 0, 0, 0],
+      [0, 0, 1, 1],
+      [0, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    [
+      [0, 0, 0, 0],
+      [1, 1, 1, 1],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    [
+      [0, 0, 0, 0],
+      [1, 1, 1, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 0],
+    ],
+    [
+      [0, 0, 0, 0],
+      [0, 0, 1, 0],
+      [1, 1, 1, 0],
+      [0, 0, 0, 0],
+    ],
+  ];
+
+//テトリミノのindex
+let tet_idx;
+//選択されたtet
+let tet;
 
 //テトリミノのオフセット量（何マス分ずれているか）
 let offsetX = 0;
@@ -181,7 +225,7 @@ const clearLine = () => {
 }
 
 //繰り返し行われる落下処理
-const droptest = () => {
+const droptet = () => {
     //下に行けたら
     if (canMove (0, 1)) {
         offsetY++;
@@ -190,6 +234,9 @@ const droptest = () => {
         fixTet();
         //揃ったラインがあったら消す
         clearLine();
+        //抽選
+        tet_idx = randomIdx();
+        tet = tetTypes[tet_idx];
         //初期位置に戻す
         initStarPos();
     }
@@ -199,6 +246,11 @@ const droptest = () => {
 const initStarPos =() => {
     offsetX = boardCol / 2 - tetSize / 2;
     offsetY = 0;
+};
+
+//テトリミノのindexを抽選
+const randomIdx = () => {
+    return Math.floor (Math.random() * (tetTypes.length -1)) + 1;
 }
 //初期化処理
 const init = () => {
@@ -212,9 +264,14 @@ const init = () => {
 
     //テスト用
     //board[3][5]=1;
+
+    //最初のテトリミノを抽選
+    tet_idx = randomIdx();
+    tet = tetTypes [tet_idx];
+
     initStarPos();
     //繰り返し処理
-    timeId = setInterval (droptest, speed);
+    timeId = setInterval (droptet, speed);
     draw();
 
 }
