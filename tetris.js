@@ -27,48 +27,60 @@ const tetSize = 4;
 const tetTypes = [
     [], //最初の要素を空としておく
     [
-      [0, 0, 0, 0],
-      [0, 1, 1, 0],
-      [0, 1, 1, 0],
-      [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 1, 1, 0],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 0],
-      [0, 1, 0, 0],
-      [1, 1, 1, 0],
-      [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 1, 0, 0],
+        [1, 1, 1, 0],
+        [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 0],
-      [1, 1, 0, 0],
-      [0, 1, 1, 0],
-      [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 1, 0, 0],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 0],
-      [0, 0, 1, 1],
-      [0, 1, 1, 0],
-      [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 1, 1],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 0],
-      [1, 1, 1, 1],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 0],
-      [1, 1, 1, 0],
-      [0, 0, 1, 0],
-      [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 1, 1, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 0],
     ],
     [
-      [0, 0, 0, 0],
-      [0, 0, 1, 0],
-      [1, 1, 1, 0],
-      [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 1, 0],
+        [1, 1, 1, 0],
+        [0, 0, 0, 0],
     ],
-  ];
+];
+
+//テトリミノの色
+const tetColors = [
+    '',//これが選択されることはない
+    '#f6fe85',
+    '#07e0e7',
+    '#7ced77',
+    '#f78ff0',
+    '#f94246',
+    '#9693fe',
+    '#f2b907',
+];
 
 //テトリミノのindex
 let tet_idx;
@@ -85,15 +97,18 @@ const board = [];
 //タイマーID
 let timeId = NaN;
 
+//ゲームオーバーフラグ
+let isGameOber = false;
+
 const draw = () => {
     SecondConText.fillStyle = '#000';
     SecondConText.fillRect(0, 0, canvasW, canvasH);
 
     //ボードに存在しているブロックを塗る
-    for (let y = 0; y < boardRow; y++){
-        for(let x = 0; x < boardCol; x++){
-            if(board[y][x]){
-                drawBlock(x, y);
+    for (let y = 0; y < boardRow; y++) {
+        for (let x = 0; x < boardCol; x++) {
+            if (board[y][x]) {
+                drawBlock(x, y, board[y][x]);
             }
         }
     }
@@ -102,36 +117,36 @@ const draw = () => {
     for (let y = 0; y < tetSize; y++) {
         for (let x = 0; x < tetSize; x++) {
             if (tet[y][x]) {
-                drawBlock(offsetX + x, offsetY + y)
+                drawBlock(offsetX + x, offsetY + y, tet_idx);
             }
         }
     }
 };
 
- //ブロックを一つ描画する
- const drawBlock = (x, y) => {
+//ブロックを一つ描画する
+const drawBlock = (x, y, tet_idx) => {
     let px = x * blockSize;
     let py = y * blockSize;
 
     //塗り色
-    SecondConText.fillStyle = '#f00';
-    SecondConText.fillRect (px, py, blockSize, blockSize);
+    SecondConText.fillStyle = tetColors[tet_idx];
+    SecondConText.fillRect(px, py, blockSize, blockSize);
     //線を設定
     SecondConText.strokestyle = 'black';
     //線を描写
     SecondConText.strokeRect(px, py, blockSize, blockSize);
- };
+};
 
 //指定された方向に移動できるかの判定（x移動量, y移動量)
 const canMove = (dx, dy, nowTet = tet) => {
     for (let y = 0; y < tetSize; y++) {
-        for (let x = 0; x < tetSize ; x++){
+        for (let x = 0; x < tetSize; x++) {
             //その場所にブロッックがあれば
             if (nowTet[y][x]) {
                 //ボード座標に変換
                 let nx = offsetX + x + dx;
                 let ny = offsetY + y + dy;
-                if(
+                if (
                     //調整する座標がボード外だったらできない
                     ny < 0 ||
                     nx < 0 ||
@@ -139,7 +154,7 @@ const canMove = (dx, dy, nowTet = tet) => {
                     nx >= boardCol ||
                     //移動したいボード上の場所にすでに存在していたらできない。
                     board[ny][nx]
-                ){
+                ) {
                     //移動できない。
                     return false;
                 }
@@ -153,12 +168,12 @@ const canMove = (dx, dy, nowTet = tet) => {
 //回転
 const createRotateTet = () => {
     //新しいtetを作る
-    let newTet =[];
+    let newTet = [];
     for (let y = 0; y < tetSize; y++) {
         newTet[y] = [];
         for (let x = 0; x < tetSize; x++) {
             //時計回りに90度回転させる
-            newTet[y][x] = tet[tetSize -1 -x][y];
+            newTet[y][x] = tet[tetSize - 1 - x][y];
         }
     }
     return newTet;
@@ -176,11 +191,11 @@ document.onkeydown = (e) => {
             if (canMove(1, 0)) offsetX++;
             break;
         case 40: //下
-            if (canMove(0,1)) offsetY++;
+            if (canMove(0, 1)) offsetY++;
             break;
         case 32: //Space
             let newTet = createRotateTet();
-            if(canMove (0, 0,newTet)) {
+            if (canMove(0, 0, newTet)) {
                 tet = newTet;
             }
     }
@@ -193,7 +208,7 @@ const fixTet = () => {
         for (let x = 0; x < tetSize; x++) {
             if (tet[y][x]) {
                 //ボードに書き込む
-                board [offsetY + y][offsetX + x] = 1;
+                board[offsetY + y][offsetX + x] = tet_idx;
             }
         }
     }
@@ -227,7 +242,7 @@ const clearLine = () => {
 //繰り返し行われる落下処理
 const droptet = () => {
     //下に行けたら
-    if (canMove (0, 1)) {
+    if (canMove(0, 1)) {
         offsetY++;
     } else {
         //行けなかったら固定する
@@ -243,21 +258,21 @@ const droptet = () => {
     draw();
 };
 
-const initStarPos =() => {
+const initStarPos = () => {
     offsetX = boardCol / 2 - tetSize / 2;
     offsetY = 0;
 };
 
 //テトリミノのindexを抽選
 const randomIdx = () => {
-    return Math.floor (Math.random() * (tetTypes.length -1)) + 1;
+    return Math.floor(Math.random() * (tetTypes.length - 1)) + 1;
 }
 //初期化処理
 const init = () => {
     //ボード(20*10を0で埋める)
-    for (let y = 0; y < boardRow; y++){
-        board[y] =[];
-        for(let x = 0; x < boardCol; x++) {
+    for (let y = 0; y < boardRow; y++) {
+        board[y] = [];
+        for (let x = 0; x < boardCol; x++) {
             board[y][x] = 0;
         }
     }
@@ -267,11 +282,11 @@ const init = () => {
 
     //最初のテトリミノを抽選
     tet_idx = randomIdx();
-    tet = tetTypes [tet_idx];
+    tet = tetTypes[tet_idx];
 
     initStarPos();
     //繰り返し処理
-    timeId = setInterval (droptet, speed);
+    timeId = setInterval(droptet, speed);
     draw();
 
 }
