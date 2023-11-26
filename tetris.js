@@ -143,17 +143,34 @@ document.onkeydown = (e) => {
     draw();
 };
 
+//動きが止まったtetをボード座標に書き写す
+const fixTet = () => {
+    for (let y = 0; y < tetSize; y++) {
+        for (let x = 0; x < tetSize; x++) {
+            if (tet[y][x]) {
+                //ボードに書き込む
+                board [offsetY + y][offsetX + x] = 1;
+            }
+        }
+    }
+}
+
+
 //繰り返し行われる落下処理
 const droptest = () => {
     //下に行けたら
     if (canMove (0, 1)) {
         offsetY++;
     } else {
+        //行けなかったら固定する
+        fixTet();
+        //初期位置に戻す
+        initStarPos();
     }
     draw();
 };
 
-const iniStarPos =() => {
+const initStarPos =() => {
     offsetX = boardCol / 2 - tetSize / 2;
     offsetY = 0;
 }
@@ -169,9 +186,9 @@ const init = () => {
 
     //テスト用
     //board[3][5]=1;
-    iniStarPos();
+    initStarPos();
     //繰り返し処理
     timeId = setInterval (droptest, speed);
     draw();
-    
+
 }
