@@ -173,5 +173,5 @@ const init = () => {
     //繰り返し処理
     timeId = setInterval (droptest, speed);
     draw();
-
+    
 }
