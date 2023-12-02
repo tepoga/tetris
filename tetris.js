@@ -194,9 +194,6 @@ document.onkeydown = (e) => {
         case 37: //左
             if (canMove(-1, 0)) offsetX--;
             break;
-        case 38: //上
-            if (canMove(0, -1)) offsetY--;
-            break;
         case 39: //右
             if (canMove(1, 0)) offsetX++;
             break;
